@@ -32,7 +32,7 @@ process.HiForest.HiForestVersion = cms.untracked.string(version)
 process.source = cms.Source("PoolSource",
                             duplicateCheckMode = cms.untracked.string("noDuplicateCheck"),
                             fileNames = cms.untracked.vstring(
-                                "/store/hidata/HIRun2013A/PAHighPt/RECO/PromptReco-v1/000/210/354/CC8F3FCD-EB62-E211-ABBF-BCAEC5329716.root"
+		"file:/afs/cern.ch/user/d/denglert/public/3E32AAA7-712D-E311-BAC3-00A0D1E94418.root"
                             ))
 
 # Number of events we want to process, -1 = all events

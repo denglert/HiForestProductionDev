@@ -32,12 +32,12 @@ process.HiForest.HiForestVersion = cms.untracked.string(version)
 process.source = cms.Source("PoolSource",
                             duplicateCheckMode = cms.untracked.string("noDuplicateCheck"),
                             fileNames = cms.untracked.vstring(
-                                "file:/data/richard/MC_TESTS/pPb_RECO.root"
+                 "file:/afs/cern.ch/work/d/denglert/public/sample/reco_hijing_1001_1_NXZ.root"
                             ))
 
 # Number of events we want to process, -1 = all events
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(100))
+    input = cms.untracked.int32(10))
 
 
 #####################################################################################
@@ -86,7 +86,7 @@ process.pACentrality.producePixelhits = cms.bool(False)
 #####################################################################################
 
 process.TFileService = cms.Service("TFileService",
-                                   fileName=cms.string("HiForest.root"))
+                                   fileName=cms.string("pPb_MC_HIJING_MB_HiForest.root"))
 
 #####################################################################################
 # Additional Reconstruction and Analysis: Main Body
@@ -177,6 +177,12 @@ process.pfcandAnalyzer.skipCharged = False
 process.pfcandAnalyzer.pfPtMin = 0
 
 #####################################################################################
+#########################
+# dEdx
+#########################
+trkTag="generalTracks"
+process.load('UserCode.EnergyLossPID.EnergyLossProducer_cff')
+process.refitterForEnergyLoss.src = trkTag
 
 #########################
 # Track Analyzer
@@ -190,6 +196,16 @@ process.ppTrack.pfCandSrc = cms.InputTag("particleFlow")
 
 # Disable this for now, causes problems.
 process.ppTrack.doPFMatching = cms.untracked.bool(False)
+
+process.ppTrack.doSimTrack = cms.untracked.bool(True)
+process.ppTrack.trackSrc   = cms.InputTag('refitterForEnergyLoss')
+process.ppTrack.doDeDx     = cms.untracked.bool(True)
+process.ppTrack.DeDxSrc    = cms.InputTag('energyLossProducer:energyLossAllHits')
+process.ppTrack.trackPtMin    = cms.untracked.double(0.0)
+process.ppTrack.simTrackPtMin = cms.untracked.double(0.0)
+process.ppTrack.vertexSrc = cms.vstring('offlinePrimaryVertices')
+#process.ppTrack.vertexSrc = cms.vstring('hiSelectedVertex')
+
 
 #####################
 # photons
@@ -222,17 +238,18 @@ process.temp_step = cms.Path(process.ak1HiGenJets +
                              process.ak6HiGenJets +
                              process.ak7HiGenJets)
 
-process.ana_step = cms.Path(process.pACentrality +
-                            process.centralityBin +
-                            process.hiEvtPlane +
+process.ana_step = cms.Path(
+       		     process.pACentrality +
+#                            process.centralityBin +
+#                            process.hiEvtPlane +
                             process.heavyIon*
                             process.hiEvtAnalyzer*
-                            process.HiGenParticleAna*
-                            process.hiGenJetsCleaned*
-                            process.jetSequences +
-                            process.photonStep +
-                            process.pfcandAnalyzer +
-                            process.rechitAna +
+#                            process.HiGenParticleAna*
+#                            process.hiGenJetsCleaned*
+#                            process.jetSequences +
+#                            process.photonStep +
+#                            process.pfcandAnalyzer +
+#                            process.rechitAna +
 #temp                            process.hltMuTree +
                             process.HiForest +
                             process.cutsTPForFak +

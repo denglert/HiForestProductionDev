@@ -18,7 +18,6 @@
 //
 //
 
-
 // system include files
 #include <memory>
 #include <iostream>
@@ -232,6 +231,7 @@ struct TrackEvent{
   float mtrkPtError[MAXTRACKS];
   float mtrkEta[MAXTRACKS];
   float mtrkPhi[MAXTRACKS];
+  float mtrkdedx[MAXTRACKS];
   int   mtrkNHit[MAXTRACKS];
   int   mtrkNlayer[MAXTRACKS];
   int   mtrkNlayer3D[MAXTRACKS];
@@ -361,6 +361,7 @@ TrackAnalyzer::TrackAnalyzer(const edm::ParameterSet& iConfig)
   }
 
   doDeDx_             = iConfig.getUntrackedParameter<bool>  ("doDeDx",false);
+  DeDxSrc_ 				 = iConfig.getParameter<edm::InputTag>("DeDxSrc");
   doDebug_             = iConfig.getUntrackedParameter<bool>  ("doDebug",false);
 
   doPFMatching_             = iConfig.getUntrackedParameter<bool>  ("doPFMatching",false);
@@ -368,14 +369,15 @@ TrackAnalyzer::TrackAnalyzer(const edm::ParameterSet& iConfig)
   useCentrality_ = iConfig.getUntrackedParameter<bool>("useCentrality",false);
   useQuality_ = iConfig.getUntrackedParameter<bool>("useQuality",false);
 
-  trackPtMin_             = iConfig.getUntrackedParameter<double>  ("trackPtMin",0.4);
+  trackPtMin_             = iConfig.getUntrackedParameter<double>  ("trackPtMin",0.0);
   trackVtxMaxDistance_             = iConfig.getUntrackedParameter<double>  ("trackVtxMaxDistance",3.0);
   qualityString_ = iConfig.getUntrackedParameter<std::string>("qualityString","highPurity");
 
   qualityStrings_ = iConfig.getUntrackedParameter<std::vector<std::string> >("qualityStrings",std::vector<std::string>(0));
   if(qualityStrings_.size() == 0) qualityStrings_.push_back(qualityString_);
 
-  simTrackPtMin_             = iConfig.getUntrackedParameter<double>  ("simTrackPtMin",0.4);
+  simTrackPtMin_             = iConfig.getUntrackedParameter<double>  ("simTrackPtMin",0.0);
+
   fiducialCut_ = (iConfig.getUntrackedParameter<bool>("fiducialCut",false));
   trackSrc_ = iConfig.getParameter<edm::InputTag>("trackSrc");
   //   tpFakeSrc_ =  iConfig.getUntrackedParameter<edm::InputTag>("tpFakeSrc",edm::InputTag("cutsTPForFak"));
@@ -810,7 +812,7 @@ TrackAnalyzer::fillSimTracks(const edm::Event& iEvent, const edm::EventSetup& iS
     TrackingParticleRef tpr(TPCollectionHeff, i);
     TrackingParticle* tp=const_cast<TrackingParticle*>(tpr.get());
 
-    if (tp->pt() < simTrackPtMin_) continue;
+
     if (tp->status() < 0 || tp->charge()==0) continue; //only charged primaries
 
     // Fill sim track info
@@ -860,6 +862,19 @@ TrackAnalyzer::fillSimTracks(const edm::Event& iEvent, const edm::EventSetup& iS
       // Fill matched rec track info
       pev_.pNRec[pev_.nParticle] = nrec;
       pev_.mtrkQual[pev_.nParticle] = 0;
+
+
+		// dEdx FIX
+  		Handle<vector<Track> > etracks;
+  		iEvent.getByLabel(trackSrc_, etracks);
+    	reco::TrackRef trackRef=reco::TrackRef(etracks,it);
+
+		Handle<DeDxDataValueMap> DeDxMap;
+  		if(doDeDx_){
+  		  iEvent.getByLabel(DeDxSrc_, DeDxMap);
+    	  pev_.mtrkdedx[pev_.nParticle]=(*DeDxMap)[trackRef].dEdx();
+		}
+		//
 
       pev_.mtrkPt[pev_.nParticle] = mtrk->pt();
       pev_.mtrkPtError[pev_.nParticle] = mtrk->ptError();

@@ -2,7 +2,7 @@ import FWCore.ParameterSet.Config as cms
 
 from HeavyIonsAnalysis.TrackAnalysis.trackAnalyzer_cff import *
 
-anaTrack.trackPtMin = 0.4
+anaTrack.trackPtMin = 0.0
 anaTrack.useQuality = False
 anaTrack.doPFMatching = True
 anaTrack.pfCandSrc = cms.InputTag("particleFlowTmp")
@@ -12,7 +12,7 @@ anaTrack.qualityStrings = cms.untracked.vstring('highPurity','highPuritySetWithP
 
 pixelTrack = anaTrack.clone(trackSrc = cms.InputTag("hiPixel3PrimTracks"))
 pixelTrack.useQuality = False
-pixelTrack.trackPtMin = 0.4
+pixelTrack.trackPtMin = 0.0
 
 mergedTrack = pixelTrack.clone(trackSrc = cms.InputTag("hiMergedTracks"))
 

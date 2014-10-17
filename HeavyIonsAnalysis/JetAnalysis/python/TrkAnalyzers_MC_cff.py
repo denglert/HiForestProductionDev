@@ -8,15 +8,15 @@ TrackAssociatorByChi2ESProducer.chi2cut = cms.double(10.0)
 anaTrack.doSimVertex = True
 anaTrack.doSimTrack = True
 anaTrack.fillSimTrack = cms.untracked.bool(True)
-anaTrack.simTrackPtMin = 0.4
+anaTrack.simTrackPtMin = 0.0
 
 pixelTrack.doSimVertex = True
 pixelTrack.doSimTrack = True
-pixelTrack.simTrackPtMin = 0.4
+pixelTrack.simTrackPtMin = 0.0
 pixelTrack.fillSimTrack = cms.untracked.bool(True)
 
 mergedTrack.doSimTrack = True
-mergedTrack.simTrackPtMin = 0.4
+mergedTrack.simTrackPtMin = 0.0
 mergedTrack.fillSimTrack = cms.untracked.bool(True)
 
 anaTrack.tpFakeSrc = cms.untracked.InputTag("cutsTPForFak")
@@ -28,13 +28,13 @@ anaTrack.tpEffSrc = cms.untracked.InputTag("cutsTPForEff")
 pixelTrack.tpFakeSrc = cms.untracked.InputTag("cutsTPForFak")
 pixelTrack.tpEffSrc = cms.untracked.InputTag("cutsTPForEff")
 
-cutsTPForFak.ptMin = 0.4
-cutsTPForEff.ptMin = 0.4
+cutsTPForFak.ptMin = 0.0
+cutsTPForEff.ptMin = 0.0
 
 ppTrack.doSimVertex = True
 ppTrack.doSimTrack = True
 ppTrack.fillSimTrack = cms.untracked.bool(True)
-ppTrack.simTrackPtMin = 0.4
+ppTrack.simTrackPtMin = 0.0
 ppTrack.tpFakeSrc = cms.untracked.InputTag("cutsTPForFak")
 ppTrack.tpEffSrc = cms.untracked.InputTag("cutsTPForEff")
 ppTrack.tpFakeSrc = cms.untracked.InputTag("cutsTPForFak")
